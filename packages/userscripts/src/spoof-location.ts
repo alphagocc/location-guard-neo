@@ -23,7 +23,7 @@ async function callGeoCb(cb: PositionCallback | PositionErrorCallback | null | u
   }
 }
 
-export const spoofLocation = (): void => {
+export function spoofLocation(): void {
   // We replace geolocation methods with our own.
   // getCurrentPosition will be called by the content script (not by the page)
   // so we dont need to keep it at all.
@@ -73,7 +73,7 @@ export const spoofLocation = (): void => {
       handlers.delete(handler);
     }
   };
-};
+}
 
 const inFrame = window !== window.top;
 

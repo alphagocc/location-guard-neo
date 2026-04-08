@@ -139,7 +139,7 @@ export const PlanarLaplace: PlanarLaplaceLike = {
       Math.sin(angle) * Math.sin(ang_distance) * Math.cos(lat1),
       Math.cos(ang_distance) - Math.sin(lat1) * Math.sin(lat2)
     );
-    // eslint-disable-next-line @stylistic/js/no-mixed-operators -- copy other's formula
+    // eslint-disable-next-line @stylistic/no-mixed-operators -- copy other's formula
     lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180..+180
     return {
       latitude: PlanarLaplace.deg_of_rad(lat2),

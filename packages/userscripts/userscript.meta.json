@@ -1,6 +1,6 @@
 {
   "name": "Location Guard",
-  "namespace": "https://skk.moe",
+  "namespace": "https://location-guard-ng.skk.moe",
   "grant": [
     "unsafeWindow",
     "GM_getValue",
@@ -17,6 +17,7 @@
   ],
   "run-at": "document-end",
   "match": ["*://*/*"],
+  "include": ["*://*/*"],
   "updateURL": "https://unpkg.com/location-guard@latest/dist/location-guard-ng.meta.js",
   "downloadURL": "https://unpkg.com/location-guard@latest/dist/location-guard-ng.user.js"
 }

@@ -147,8 +147,8 @@ function initLevelMap() {
     .on('drag', handleChangePosEvent);
 
   // popup
-  const popupHtml
-    = '<div class="map-popup">'
+  const popupHtml =
+    '<div class="map-popup">'
     + '<p><b>Protection area (red)</b> and <b>accuracy (blue)</b> around some (hypothetical) location.</p>'
     + '<p>Click on the map or drag the marker to change the location. Click on'
     + '<a href="#" id="levelMapCurrentPos" class="popup-location-btn ui-btn ui-btn-inline ui-icon-location ui-btn-icon-notext"></a>'
@@ -239,8 +239,8 @@ async function initFixedPosMap() {
     });
 
   // popup
-  const popupHtml
-    = '<div class="map-popup">'
+  const popupHtml =
+    '<div class="map-popup">'
     + '<p>This is the location reported when the privacy level is set to <b>"Use fixed location"</b>.</p>'
     + '<p>Click on the map or drag the marker to set a new fixed location.</p>'
     + '</div>';
@@ -377,8 +377,10 @@ function updateCache(ct) {
   const h = ct - 59;
 
   $('#cacheTime').text(
-    ct === 0 ? 'don\'t cache'
-      : (ct < 60 ? ct + ' minute' + (ct > 1 ? 's' : '')
+    ct === 0
+      ? 'don\'t cache'
+      : (ct < 60
+        ? ct + ' minute' + (ct > 1 ? 's' : '')
         : h + ' hour' + (h > 1 ? 's' : ''))
   );
 }

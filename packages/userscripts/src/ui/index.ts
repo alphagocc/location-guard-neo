@@ -2,7 +2,7 @@ import { PlanarLaplace } from '../laplace';
 import type { $LocationGuard, StoredValues } from 'location-guard-types';
 import { DEFAULT_VALUE, getStoredValueAsync, setStoredValueAsync } from '../storage';
 
-export const renderConfigUI = async () => {
+export async function renderConfigUI() {
   const $locationGuard: $LocationGuard = {
     ready: true,
     PlanarLaplace,
@@ -24,4 +24,4 @@ export const renderConfigUI = async () => {
     writable: false
   });
   unsafeWindow.dispatchEvent(new CustomEvent('location-guard-config-ui-ready'));
-};
+}
