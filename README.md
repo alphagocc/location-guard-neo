@@ -1,181 +1,104 @@
-# Location Guard Neo (UserScript)
+# Location Guard Neo
 
-**Location Guard Neo** is a rewritten version of the original [Location Guard](https://github.com/chatziko/location-guard) browser extension (which has already became one of many victims of [the removal of MV2 support in Google Chrome](https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline)) that uses modern web technology and is now a UserScript. It allows to protect your location while using location-aware websites, by either adding controlled noise or completely spoof with the fixed coordinates. It supports the following UserScript managers:
+A UserScript that protects your browser geolocation privacy by adding controlled noise or spoofing with fixed/IP-based coordinates. Rewritten from the discontinued [Location Guard](https://github.com/chatziko/location-guard) browser extension (killed by Chrome's MV2 deprecation).
+
+## Features
+
+- **Privacy levels** — add configurable Laplace noise (low/medium/high) for differential privacy guarantees
+- **Fixed location** — always report a predefined location, completely independent from your real one
+- **IP-based location** — derive coordinates from your public IP address, with automatic cache invalidation on IP change — ideal for proxy/VPN users to prevent geolocation leaks
+- **Per-level caching** — noisy/IP positions are cached to avoid generating multiple samples centered on the real location
+- **Modern config UI** — React + Vite SPA with light/dark mode, Leaflet maps, and responsive sidebar
+
+## Supported UserScript Managers
 
 - [Tampermonkey](https://www.tampermonkey.net/)
 - [Violentmonkey](https://violentmonkey.github.io/)
-- [AdGuard](https://adguard.com/)
-
-> Do note that AdGuard's userscript capabilities are limited (E.g. `GM_addValueChangeListener` and `registerMenuCommand`)
 
 ## Installation
 
-https://unpkg.com/location-guard@latest/dist/location-guard-neo.user.js
+Install from unpkg:
+
+```
+https://unpkg.com/location-guard-neo@latest/dist/location-guard-neo.user.js
+```
+
+Or from the project site:
+
+```
+https://location-guard-neo.pages.dev/dist/location-guard-neo.user.js
+```
 
 ## Configuration
 
-After installing the UserScript, you can configure it by opening your user script manager menu, where the "Options" menu item can be found under the "Location Guard Neo" menu. You can also access the configuration page directly by visiting the following URL:
+Open your UserScript manager menu → **Location Guard** → **Configuration**, or visit:
 
+```
 https://location-guard-neo.pages.dev/options
+```
 
-## TODO
+### Privacy Levels
 
-- [ ] New configuration UI
-  - The current configuration UI is back ported directly from the original browser extension. Need to rewrite in React and JoyUI.
-- [ ] Per domain configuration
-  - The original browser extension allows to set different privacy levels for different domains. This feature is not yet implemented in the UserScript version.
+| Level    | Behavior                                                                     |
+| -------- | ---------------------------------------------------------------------------- |
+| Fixed    | Returns a preconfigured fixed location (no real geolocation call)            |
+| IP-based | Derives location from public IP address (cached 24h, refreshes on IP change) |
+| High     | Adds noise with 2000m radius, 60min cache                                    |
+| Medium   | Adds noise with 500m radius, 30min cache                                     |
+| Low      | Adds noise with 200m radius, 10min cache                                     |
+| Real     | No modification, real location passed through                                |
 
-## How to build
+## Building from Source
 
-- Clone the repository
-- Use [pnpm](https://pnpm.io/) to install dependencies (`pnpm i`)
-- Run `pnpm run build`
-- The built script will be available in `dist` folder
+```bash
+git clone https://github.com/Alphagocc/location-guard-neo.git
+cd location-guard-neo
+pnpm install
+pnpm run build
+```
+
+The built UserScript will be at `packages/userscripts/dist/location-guard-neo.user.js`.
+
+### Development
+
+```bash
+# UserScript (watch mode)
+cd packages/userscripts && pnpm run dev
+
+# Config UI (Vite dev server on port 5173)
+cd packages/web && pnpm run dev
+```
+
+To test locally, point the UserScript at your local dev server:
+
+```bash
+cd packages/userscripts
+CONFIG_UI_HOST=localhost:5173 CONFIG_UI_ORIGIN=http://localhost:5173 pnpm run build
+```
 
 ### Build-time Configuration
 
-The following environment variables can be used to customize URLs at build time:
+| Variable           | Default                                        | Description                              |
+| ------------------ | ---------------------------------------------- | ---------------------------------------- |
+| `CONFIG_UI_HOST`   | `location-guard-neo.pages.dev`                 | Hostname for the configuration UI        |
+| `CONFIG_UI_ORIGIN` | `https://${CONFIG_UI_HOST}`                    | Full origin URL for the configuration UI |
+| `DIST_BASE_URL`    | `https://unpkg.com/location-guard-neo@latest/dist` | Base URL for UserScript update/download  |
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `CONFIG_UI_HOST` | `location-guard-neo.pages.dev` | Hostname for the configuration UI (used for host matching) |
-| `CONFIG_UI_ORIGIN` | `https://${CONFIG_UI_HOST}` | Full origin URL for the configuration UI |
-| `DIST_BASE_URL` | `https://unpkg.com/location-guard@latest/dist` | Base URL for UserScript update and download |
+## How It Works
 
-Example — build with a custom domain:
+Websites request your location via the browser's Geolocation API. Location Guard Neo intercepts `getCurrentPosition` and `watchPosition`, then either:
 
-```bash
-CONFIG_UI_HOST=my-domain.com pnpm run build
-```
+1. Returns a fixed position (no real geolocation call)
+2. Returns an IP-derived position (via ipinfo.io / ip2location.io / ip-api.com fallback chain)
+3. Calls the real API, then adds [Planar Laplace noise](http://arxiv.org/abs/1212.1984) for differential privacy
+4. Passes through the real location unmodified
 
-Example — build with custom distribution URL:
+The noise mechanism is based on a 2D Laplace distribution, formally providing a variant of [differential privacy](https://en.wikipedia.org/wiki/Differential_privacy). See the [CCS'13 paper](http://arxiv.org/abs/1212.1984) for details.
 
-```bash
-DIST_BASE_URL=https://cdn.example.com/dist pnpm run build
-```
+## TODO
 
-<details>
-<summary>
-<h2>FAQ</h2>
-</summary>
+- [ ] Per-domain configuration — different privacy levels per website
 
-### What is Location Guard and Location Guard Neo?
+## License
 
-Websites can ask the browser for your location (via JavaScript). When they do
-so, the browser first asks your permission, and if you accept, it detects your
-location (typically by transmitting a list of available wifi access points to a
-geolocation provider such as Google Location Services, or via GPS if available)
-and gives it to the website.
-
-The Location Guard browser extension project starts since 2013 and aims to
-intercepts this procedure. It has been discontinued in 2020 and now obsolete
-(due to [the removal of MV2 support in Google Chrome](https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline)).
-
-The Location Guard Neo is a rewrite version of the original Location Guard browser
-extension that uses modern web technology (Like TypeScript, React, rollup, etc).
-
-The permission dialog appears as usual, and you can still choose to deny. If
-you give permission, then Location Guard Neo obtains your location and adds "random noise"
-to it or even completely spoofs it with a specified fixed location. Only
-the fake location is then given to the website.
-
-To see Location Guard Neo in action use [this demo](https://browserleaks.com/geo), a
-[geolocalized weather forecast](https://darksky.net/), or go to [Google
-Maps](https://www.google.com/maps) and press the "pin" button.
-
-### What kind of privacy does Location Guard Neo provide?
-
-Location Guard Neo provides privacy within a certain _protection area_ by ensuring
-that all locations within this area look _plausible_ for being the real one.
-This is achieved by adding random noise in a way such that all locations within
-the protection area can produce the same fake location with similar probability.
-As a consequence, the fake location provides no information to the website for
-distinguishing between locations within the protection area.
-
-**Warning:** _background knowledge_ can still be used by websites to guess the
-real location within the protection area. For instance, if the protection area
-is in the middle of a lake containing only a small island, it will be easy to
-infer that the real location is on the island. In scenarios like this you should
-choose a higher privacy level, or deny disclosing your location at all, or specify
-a fixed location.
-
-### What are "privacy levels"?
-
-The privacy level determines the amount of noise added to your real location. A
-higher level adds more noise, so the fake location will be further away from the
-real one. This offers protection within a larger area, but it might make the
-service provided by the website less useful.
-
-By default all websites use the "medium" level (this can be changed from the
-extension's options). You can select a different level for a specific website
-using the ![pin](src/images/pin_19.png) icon. For instance, you could select
-a lower privacy level for websites that need an accurate location (eg. maps),
-and a higher one for websites that only need approximate information (eg.
-weather forecast).
-
-For more flexibility, each level can be configured from the _Privacy Levels_
-tab. The red circle is the _protection area_: locations in this area look
-plausible to be the real one (see "What kind of privacy does Location Guard
-provide?" above). The blue circle is the _accuracy_: the fake location will be
-inside this circle with high probability (note that the noise is random). Use
-the slider to adapt the two areas to your needs.
-
-### What is a "fixed location"?
-
-The privacy level can be set to "Use fixed location". In this case Location
-Guard always reports to the website a predefined fixed location that never
-changes (instead of generating a fake location by adding noise to the real one).
-This offers the highest privacy, since the reported location is completely
-independent from the real one, at the cost of very low accuracy.
-
-You can modify the fixed location from the extension's options (Fixed Location
-tab).
-
-When using a fixed location, the browser's geolocation is not performed at all.
-This offers better privacy, since the list of wifi access points is not
-transmitted to Google's servers. However, it has the side effect that the
-_permission dialog is not displayed at all_. This behaviour is usually
-acceptable when the fixed location is dummy, but it can be modified if you wish.
-
-### Why some websites detect my location although I use Location Guard Neo?
-
-Some websites detect your location based on your [IP address](https://en.wikipedia.org/wiki/IP_address)
-which is visible to all websites you visit. However, most of the time this type
-of geolocation is _not accurate_ and is limited to the city or postal/zip code level.
-
-Location Guard Neo does not protect your IP address; it hides the location revealed
-by the browser through the JavaScript API, which is usually _very accurate_.
-
-### How Location Guard Neo uses my information?
-
-Location Guard Neo takes your privacy seriously! First, the extension itself has no
-"special permission" to access your location, it can obtain it only when a
-website asks for it and only if you allow access in the permission dialog.
-
-Location Guard Neo runs locally in your browser and _sends no information_
-whatsoever to the network. It only communicates your fake location to the
-website that asks for it.
-
-Location Guard Neo also never stores your real location. The _fake_ location is
-cached for a small period of time; if a website asks for your location during
-this time the cached fake location will be returned. This improves privacy by
-avoiding to generate too many fake locations which would be centered around the
-real one. The cache period can be configured from the extension's options
-(Privacy Levels tab) and there is also a button to delete the cache.
-
-### What is the technology behind Location Guard Neo?
-
-Location Guard Neo implements a [location obfuscation](https://en.wikipedia.org/wiki/Location_obfuscation)
-technique based on adding noise from a 2-dimensional
-[Laplace distribution](https://en.wikipedia.org/wiki/Laplace_distribution).
-This method can be formally shown to provide a privacy guarantee which is a variant
-of [Differential Privacy](https://en.wikipedia.org/wiki/Differential_privacy).
-More details can be found in the [CCS'13 paper](http://arxiv.org/abs/1212.1984),
-or in the [PhD thesis](https://pastel.archives-ouvertes.fr/tel-01098088/document)
-of Nicolas Bordenabe.
-
-</details>
-
-----
-
-**Location Guard Neo** is released under the [MIT](./LICENSE) License.
+[MIT](./LICENSE)

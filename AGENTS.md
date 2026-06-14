@@ -16,7 +16,7 @@ Monorepo managed with **pnpm workspaces** and **Turborepo**.
 location-guard-neo/
 ├── packages/
 │   ├── types/            # Shared TypeScript type definitions (package: location-guard-types)
-│   ├── userscripts/      # Core UserScript — the main deliverable (package: location-guard)
+│   ├── userscripts/      # Core UserScript — the main deliverable (package: location-guard-neo)
 │   │   ├── src/
 │   │   │   ├── index.ts          # Entry point: spoofs location, registers menu command, renders config UI
 │   │   │   ├── spoof-location.ts # Geolocation API interception (getCurrentPosition, watchPosition, clearWatch)
@@ -124,7 +124,7 @@ URLs are not hardcoded in source. They are injected at build time via `@rollup/p
 |----------|---------|---------|
 | `CONFIG_UI_HOST` | `location-guard-neo.pages.dev` | `index.ts` host check, via `__CONFIG_UI_HOST__` |
 | `CONFIG_UI_ORIGIN` | `https://${CONFIG_UI_HOST}` | `index.ts` options URL, metadata namespace, via `__CONFIG_UI_ORIGIN__` |
-| `DIST_BASE_URL` | `https://unpkg.com/location-guard@latest/dist` | metadata `updateURL` / `downloadURL` |
+| `DIST_BASE_URL` | `https://unpkg.com/location-guard-neo@latest/dist` | metadata `updateURL` / `downloadURL` |
 
 ## Coding Conventions
 

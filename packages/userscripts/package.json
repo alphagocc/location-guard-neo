@@ -1,5 +1,5 @@
 {
-  "name": "location-guard",
+  "name": "location-guard-neo",
   "version": "0.2.2",
   "private": false,
   "description": "A UserScript that hide/spoof your geographic location from websites.",

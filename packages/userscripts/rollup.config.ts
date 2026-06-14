@@ -12,7 +12,7 @@ import pkgJson from './package.json';
 
 const CONFIG_UI_HOST = process.env.CONFIG_UI_HOST || 'location-guard-neo.pages.dev';
 const CONFIG_UI_ORIGIN = process.env.CONFIG_UI_ORIGIN || `https://${CONFIG_UI_HOST}`;
-const DIST_BASE_URL = process.env.DIST_BASE_URL || 'https://unpkg.com/location-guard@latest/dist';
+const DIST_BASE_URL = process.env.DIST_BASE_URL || 'https://unpkg.com/location-guard-neo@latest/dist';
 
 const userScriptMetaBlockConfig = {
   file: './userscript.meta.json',
