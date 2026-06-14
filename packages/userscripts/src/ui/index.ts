@@ -1,4 +1,5 @@
 import type { $LocationGuard, StoredValues } from 'location-guard-types';
+import { fetchIpPosition } from '../ip-location';
 import { PlanarLaplace } from '../laplace';
 import { DEFAULT_VALUE, getStoredValueAsync, setStoredValueAsync } from '../storage';
 
@@ -12,6 +13,7 @@ export async function renderConfigUI() {
     },
     setValue: setStoredValueAsync,
     getValue: getStoredValueAsync,
+    getIpPosition: fetchIpPosition,
     async resetConfig() {
       const keys = Object.keys(DEFAULT_VALUE) as Array<keyof StoredValues>;
       await Promise.all(keys.map(key => setStoredValueAsync(key, DEFAULT_VALUE[key])));

@@ -12,7 +12,17 @@
     "GM_addValueChangeListener",
     "GM_removeValueChangeListener",
     "GM.addValueChangeListener",
-    "GM.removeValueChangeListener"
+    "GM.removeValueChangeListener",
+    "GM.xmlHttpRequest",
+    "GM_xmlhttpRequest"
+  ],
+  "connect": [
+    "ipinfo.io",
+    "api.ip2location.io",
+    "ip-api.com",
+    "cloudflare.com",
+    "1.1.1.1",
+    "[2606:4700:4700::1001]"
   ],
   "run-at": "document-end",
   "match": ["*://*/*"],

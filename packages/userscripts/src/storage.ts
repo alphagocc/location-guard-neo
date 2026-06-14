@@ -8,6 +8,7 @@ export const DEFAULT_VALUE: StoredValues = {
     latitude: -4.448784,
     longitude: -171.24832,
   },
+  ipPos: null,
   updateAccuracy: true,
   epsilon: 2,
   levels: {

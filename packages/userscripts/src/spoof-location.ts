@@ -1,6 +1,7 @@
 import type { MutableGeolocationCoords, MutableGeolocationPosition } from 'location-guard-types';
 
 import { klona } from 'klona/lite';
+import { fetchCurrentIp, fetchIpPosition } from './ip-location';
 import { PlanarLaplace } from './laplace';
 import { getStoredValueAsync, setStoredValueAsync } from './storage';
 import { isMobileDevice, randomInt } from './utils';
@@ -117,6 +118,36 @@ async function getNoisyPosition(opt: PositionOptions | undefined): Promise<Noisy
       timestamp: Date.now(),
     };
     return { success: true, position: noisy };
+  }
+
+  if (!paused && level === 'ip') {
+    try {
+      let ipPos = await getStoredValueAsync('ipPos');
+      const currentIp = await fetchCurrentIp();
+
+      if (!ipPos || ipPos.ip !== currentIp || Date.now() - ipPos.timestamp >= 86_400_000) {
+        const pos = await fetchIpPosition();
+        ipPos = { ...pos, timestamp: Date.now() };
+        await setStoredValueAsync('ipPos', ipPos);
+      }
+
+      const noisy: MutableGeolocationPosition = {
+        coords: {
+          latitude: ipPos.latitude,
+          longitude: ipPos.longitude,
+          accuracy: 1000,
+          altitude: isMobileDevice() ? randomInt(10, 100) : null,
+          altitudeAccuracy: isMobileDevice() ? 10 : null,
+          heading: isMobileDevice() ? randomInt(0, 360) : null,
+          speed: null,
+        },
+        timestamp: Date.now(),
+      };
+      return { success: true, position: noisy };
+    }
+    catch (err) {
+      console.error('IP geolocation failed, falling back to real position', err);
+    }
   }
 
   return new Promise((resolve) => {

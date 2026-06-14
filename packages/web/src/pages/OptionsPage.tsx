@@ -4,6 +4,7 @@ import { useLocationGuard } from '../hooks/useLocationGuard';
 
 const LEVEL_OPTIONS: { value: Level; label: string }[] = [
   { value: 'fixed', label: 'Use fixed location' },
+  { value: 'ip', label: 'Use IP-based location' },
   { value: 'high', label: 'High' },
   { value: 'medium', label: 'Medium' },
   { value: 'low', label: 'Low' },

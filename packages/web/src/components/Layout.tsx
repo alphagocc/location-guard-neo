@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ExternalLinkIcon, MapPinIcon, MenuIcon, MoonIcon, SettingsIcon, ShieldIcon, SunIcon } from './Icons';
+import { ExternalLinkIcon, GlobeIcon, MapPinIcon, MenuIcon, MoonIcon, SettingsIcon, ShieldIcon, SunIcon } from './Icons';
 
-export type Page = 'options' | 'levels' | 'fixedPos';
+export type Page = 'options' | 'levels' | 'fixedPos' | 'ipLocation';
 
 interface LayoutProps {
   page: Page;
@@ -15,6 +15,7 @@ const NAV_ITEMS: { id: Page; label: string; icon: React.ComponentType<{ classNam
   { id: 'options', label: 'Options', icon: SettingsIcon },
   { id: 'levels', label: 'Privacy Levels', icon: ShieldIcon },
   { id: 'fixedPos', label: 'Fixed Location', icon: MapPinIcon },
+  { id: 'ipLocation', label: 'IP Location', icon: GlobeIcon },
 ];
 
 export function Layout({ page, onPageChange, theme, onToggleTheme, children }: LayoutProps) {

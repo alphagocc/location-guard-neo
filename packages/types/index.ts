@@ -16,7 +16,7 @@ export interface MutableGeolocationPosition {
 
 export type MutableGeolocationCoords = Omit<Writable<GeolocationCoordinates>, 'toJSON'>;
 
-export type Level = 'fixed' | 'real' | NoisyLevel;
+export type Level = 'fixed' | 'ip' | 'real' | NoisyLevel;
 export type NoisyLevel = 'low' | 'medium' | 'high';
 
 export interface StoredValues {
@@ -35,6 +35,12 @@ export interface StoredValues {
   }>>;
   paused: boolean;
   fixedPos: Position;
+  ipPos: {
+    latitude: number;
+    longitude: number;
+    ip: string;
+    timestamp: number;
+  } | null;
 }
 
 declare global {
@@ -75,4 +81,5 @@ export interface $LocationGuard {
   setValue: <K extends keyof StoredValues>(key: K, value: StoredValues[K]) => Promise<void>;
   getValue: <K extends keyof StoredValues>(key: K) => Promise<StoredValues[K]>;
   resetConfig: () => Promise<void>;
+  getIpPosition: () => Promise<{ latitude: number; longitude: number; ip: string }>;
 }
