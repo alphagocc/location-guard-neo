@@ -17,10 +17,9 @@ export default antfu(
     },
   },
   {
-    files: ['web/_static/static/**/*.js'],
+    files: ['packages/web/src/**/*.{ts,tsx}'],
     rules: {
       'no-alert': 'off',
-      'no-console': 'off',
     },
   },
 );

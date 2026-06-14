@@ -26,9 +26,8 @@ location-guard-neo/
 │   │   │   └── ui/index.ts       # Exposes $locationGuard API on unsafeWindow for config UI
 │   │   ├── rollup.config.ts      # Rollup + SWC build config, outputs IIFE bundle
 │   │   └── userscript.meta.json  # Tampermonkey/Violentmonkey metadata (grants, match patterns)
-│   ├── web/              # Next.js configuration UI (WIP, React + MUI Joy)
+│   ├── web/              # Vite + React configuration UI (light/dark mode)
 │   └── configs/          # Shared tsconfig base
-├── web/                  # Legacy static config UI (HTML/CSS/JS), deployed to GitHub Pages
 ├── turbo.json            # Turborepo task definitions
 ├── pnpm-workspace.yaml   # Workspace package locations
 └── eslint.config.mjs    # ESLint flat config (@antfu/eslint-config)
@@ -43,7 +42,7 @@ location-guard-neo/
 | Build orchestration | Turborepo |
 | UserScript bundler | Rollup + SWC (`rollup-plugin-swc3`) |
 | UserScript metadata | `rollup-plugin-userscript-metablock` |
-| Web UI framework | Next.js 14 + React 19 + MUI Joy |
+| Web UI framework | Vite 7 + React 19 + Leaflet |
 | Linting | ESLint 10 with `@antfu/eslint-config` |
 | CI/CD | GitHub Actions (npm publish + GitHub Pages) |
 | Versioning | `bumpp` for synchronized monorepo releases |
@@ -60,7 +59,7 @@ pnpm run release          # Bump version, commit, and tag (uses bumpp)
 Per-package dev:
 ```bash
 cd packages/userscripts && pnpm run dev    # Watch mode for UserScript
-cd packages/web && pnpm run dev            # Next.js dev server (port 3000)
+cd packages/web && pnpm run dev            # Vite dev server (port 5173)
 ```
 
 ## Architecture
@@ -110,12 +109,12 @@ Key types to know:
 ## CI/CD
 
 - **Publish workflow** (`.github/workflows/publish.yml`): On push to `master`, builds and publishes to npm if the commit message matches `release: X.Y.Z`. Pre-release tags publish under `next` dist-tag. Uses npm provenance.
-- **Pages workflow** (`.github/workflows/pages.yml`): Deploys the `web/` directory (legacy config UI) to GitHub Pages on push to `master`.
+- **Pages workflow** (`.github/workflows/pages.yml`): Deploys the `packages/web` build output to GitHub Pages on push to `master`.
 
 ## Known TODOs
 
 - Per-domain configuration (different privacy levels per website) — not yet implemented
-- New configuration UI in React + MUI Joy — the `packages/web` package is scaffolded but mostly empty; the current UI is the legacy HTML/JS version in `web/`
+- New configuration UI in React + Vite — the `packages/web` package implements the config UI with light/dark mode support
 
 ## Build-time Configuration
 
