@@ -1,22 +1,23 @@
 {
-  "name": "location-guard-ng-monorepo",
+  "name": "location-guard-neo-monorepo",
   "version": "0.2.2",
   "private": true,
   "scripts": {
-    "lint": "eslint --format=sukka .",
+    "lint": "eslint .",
     "build": "turbo build",
     "prerelease": "pnpm run lint && pnpm run build",
     "release": "bumpp -r --all --commit \"release: %s\" --tag \"%s\""
   },
   "devDependencies": {
-    "@eslint-sukka/react": "^8.9.2",
-    "bumpp": "^9.11.1",
-    "eslint": "^10.2.0",
-    "eslint-config-sukka": "^8.9.2",
-    "eslint-formatter-sukka": "^8.9.2",
+    "@antfu/eslint-config": "^9.0.0",
+    "@eslint-react/eslint-plugin": "^5.9.0",
+    "bumpp": "^11.1.0",
+    "eslint": "^10.5.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
     "location-guard-configs": "workspace:*",
-    "turbo": "^2.9.5",
-    "typescript": "^5.9.3"
+    "turbo": "^2.9.18",
+    "typescript": "^6.0.3"
   },
   "packageManager": "pnpm@10.33.0"
 }

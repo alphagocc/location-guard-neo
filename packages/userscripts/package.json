@@ -3,11 +3,7 @@
   "version": "0.2.2",
   "private": false,
   "description": "A UserScript that hide/spoof your geographic location from websites.",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SukkaW/location-guard-ng.git"
-  },
-  "main": "dist/location-guard-ng.user.js",
+  "main": "dist/location-guard-neo.user.js",
   "files": [
     "dist"
   ],
@@ -23,25 +19,25 @@
     "location",
     "location-guard"
   ],
-  "author": "Sukka <https://skk.moe>",
+  "author": "",
   "license": "MIT",
   "dependencies": {
-    "foxact": "^0.3.0",
+    "foxact": "^0.3.5",
     "klona": "^2.0.6"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^6.0.0",
-    "@rollup/plugin-commonjs": "^29.0.2",
+    "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-replace": "^6.0.3",
-    "@swc/core": "^1.15.24",
+    "@swc/core": "^1.15.41",
     "@types/greasemonkey": "^4.0.7",
-    "@types/greasemonkey3": "npm:@types/greasemonkey@^3.0.3",
-    "@types/node": "^22.19.17",
+    "@types/greasemonkey3": "npm:@types/greasemonkey@^4.0.7",
+    "@types/node": "^25.9.3",
     "location-guard-types": "workspace:*",
-    "rollup": "^4.60.1",
+    "rollup": "^4.61.1",
     "rollup-plugin-swc3": "^0.12.1",
     "rollup-plugin-userscript-metablock": "^0.4.3",
-    "typed-query-selector": "^2.12.1"
+    "typed-query-selector": "^2.12.2"
   }
 }

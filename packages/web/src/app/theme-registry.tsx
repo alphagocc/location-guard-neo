@@ -1,11 +1,11 @@
 'use client';
 
-import createCache from '@emotion/cache';
 import type { Options as EmotionCacheOptions } from '@emotion/cache';
-import { useServerInsertedHTML } from 'next/navigation';
+import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
-import { CssVarsProvider } from '@mui/joy/styles';
 import CssBaseline from '@mui/joy/CssBaseline';
+import { CssVarsProvider } from '@mui/joy/styles';
+import { useServerInsertedHTML } from 'next/navigation';
 import { useState } from 'react';
 
 export default function ThemeRegistry({ options, children }: React.PropsWithChildren<{ options: EmotionCacheOptions }>) {
@@ -43,7 +43,7 @@ export default function ThemeRegistry({ options, children }: React.PropsWithChil
         key={cache.key}
         data-emotion={`${cache.key} ${names.join(' ')}`}
         dangerouslySetInnerHTML={{
-          __html: styles
+          __html: styles,
         }}
       />
     );

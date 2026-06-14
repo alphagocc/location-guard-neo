@@ -2,14 +2,14 @@ import type React from 'react';
 import ThemeRegistry from './theme-registry';
 
 export default function RootLayout({
-  children
+  children,
 }: React.PropsWithChildren) {
   return (
     <html lang="en">
       <body>
         <ThemeRegistry
           options={{
-            key: 'sukka'
+            key: 'location-guard-neo',
           }}
         >
           {children}

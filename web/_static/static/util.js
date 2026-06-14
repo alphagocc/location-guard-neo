@@ -11,8 +11,10 @@ window.Util = {
     // Note: JSON stringify/parse doesn't work for cloning native objects such as Position and PositionError
     //
     const t = typeof obj;
-    if (obj === null || t === 'undefined' || t === 'boolean' || t === 'string' || t === 'number') return obj;
-    if (t !== 'object') return null;
+    if (obj === null || t === 'undefined' || t === 'boolean' || t === 'string' || t === 'number')
+      return obj;
+    if (t !== 'object')
+      return null;
 
     const o = {};
     for (const k in obj) {
@@ -48,15 +50,17 @@ window.Util = {
     _listeners: {},
 
     addListener(name, fun) {
-      if (!this._listeners[name]) this._listeners[name] = [];
+      if (!this._listeners[name])
+        this._listeners[name] = [];
       this._listeners[name].push(fun);
     },
 
     fire(name) {
       const list = this._listeners[name];
-      if (!list) return;
+      if (!list)
+        return;
 
       for (let i = 0; i < list.length; i++) list[i]();
-    }
-  }
+    },
+  },
 };

@@ -6,24 +6,24 @@ export const DEFAULT_VALUE: StoredValues = {
   cachedPos: {},
   fixedPos: {
     latitude: -4.448784,
-    longitude: -171.24832
+    longitude: -171.24832,
   },
   updateAccuracy: true,
   epsilon: 2,
   levels: {
     low: {
       radius: 200,
-      cacheTime: 10
+      cacheTime: 10,
     },
     medium: {
       radius: 500,
-      cacheTime: 30
+      cacheTime: 30,
     },
     high: {
       radius: 2000,
-      cacheTime: 60
-    }
-  }
+      cacheTime: 60,
+    },
+  },
   // domainLevel: {} // TODO: per domain level
 };
 

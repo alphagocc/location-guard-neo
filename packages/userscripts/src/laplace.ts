@@ -4,7 +4,7 @@
 // selection of epsilon
 //
 
-import type { Position, PositionXY, PlanarLaplaceLike } from 'location-guard-types';
+import type { PlanarLaplaceLike, Position, PositionXY } from 'location-guard-types';
 
 // constructor
 export const PlanarLaplace: PlanarLaplaceLike = {
@@ -30,7 +30,7 @@ export const PlanarLaplace: PlanarLaplaceLike = {
     // convert to degrees
     return {
       latitude: PlanarLaplace.deg_of_rad(rLat),
-      longitude: PlanarLaplace.deg_of_rad(rLon)
+      longitude: PlanarLaplace.deg_of_rad(rLon),
     };
   },
 
@@ -38,7 +38,7 @@ export const PlanarLaplace: PlanarLaplaceLike = {
     // latitude and longitude are converted in radiants
     return {
       x: PlanarLaplace.earth_radius * PlanarLaplace.rad_of_deg(longitude),
-      y: PlanarLaplace.earth_radius * Math.log(Math.tan(Math.PI / 4 + PlanarLaplace.rad_of_deg(latitude) / 2))
+      y: PlanarLaplace.earth_radius * Math.log(Math.tan(Math.PI / 4 + PlanarLaplace.rad_of_deg(latitude) / 2)),
     };
   },
 
@@ -60,7 +60,9 @@ export const PlanarLaplace: PlanarLaplaceLike = {
       // This line decides the precision of the float number that would be returned
       return (Math.round(1_000_000 * q) / 1_000_000);
     }
-    if (x === 0) { return 0; }
+    if (x === 0) {
+      return 0;
+    }
     // TODO why do you need this if branch?
 
     return 0;
@@ -103,7 +105,8 @@ export const PlanarLaplace: PlanarLaplaceLike = {
       const tmp = PlanarLaplace.getCartesian(pos);
       x = tmp.x;
       y = tmp.y;
-    } else {
+    }
+    else {
       x = pos.x;
       y = pos.y;
     }
@@ -116,7 +119,7 @@ export const PlanarLaplace: PlanarLaplaceLike = {
 
     return PlanarLaplace.getLatLon({
       x: x + r * Math.cos(theta),
-      y: y + r * Math.sin(theta)
+      y: y + r * Math.sin(theta),
     });
   },
 
@@ -125,7 +128,7 @@ export const PlanarLaplace: PlanarLaplaceLike = {
     this: void,
     { latitude, longitude }: Position,
     distance: number,
-    angle: number
+    angle: number,
   ): Position {
     const ang_distance = distance / PlanarLaplace.earth_radius;
     const lat1 = PlanarLaplace.rad_of_deg(latitude);
@@ -133,17 +136,17 @@ export const PlanarLaplace: PlanarLaplaceLike = {
 
     const lat2 = Math.asin(
       Math.sin(lat1) * Math.cos(ang_distance)
-      + Math.cos(lat1) * Math.sin(ang_distance) * Math.cos(angle)
+      + Math.cos(lat1) * Math.sin(ang_distance) * Math.cos(angle),
     );
     let lon2 = lon1 + Math.atan2(
       Math.sin(angle) * Math.sin(ang_distance) * Math.cos(lat1),
-      Math.cos(ang_distance) - Math.sin(lat1) * Math.sin(lat2)
+      Math.cos(ang_distance) - Math.sin(lat1) * Math.sin(lat2),
     );
-    // eslint-disable-next-line @stylistic/no-mixed-operators -- copy other's formula
+
     lon2 = (lon2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI; // normalise to -180..+180
     return {
       latitude: PlanarLaplace.deg_of_rad(lat2),
-      longitude: PlanarLaplace.deg_of_rad(lon2)
+      longitude: PlanarLaplace.deg_of_rad(lon2),
     };
   },
 
@@ -153,5 +156,5 @@ export const PlanarLaplace: PlanarLaplaceLike = {
     return PlanarLaplace.addPolarNoise(epsilon, pos);
   },
 
-  earth_radius: 6_378_137 // const, in meters
+  earth_radius: 6_378_137, // const, in meters
 };

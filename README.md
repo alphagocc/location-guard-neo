@@ -1,6 +1,6 @@
-# Location Guard Ng (UserScript)
+# Location Guard Neo (UserScript)
 
-**Location Guard Ng** is a rewritten version of the original [Location Guard](https://github.com/chatziko/location-guard) browser extension (which has already became one of many victims of [the removal of MV2 support in Google Chrome](https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline)) that uses modern web technology and is now a UserScript. It allows to protect your location while using location-aware websites, by either adding controlled noise or completely spoof with the fixed coordinates. It supports the following UserScript managers:
+**Location Guard Neo** is a rewritten version of the original [Location Guard](https://github.com/chatziko/location-guard) browser extension (which has already became one of many victims of [the removal of MV2 support in Google Chrome](https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline)) that uses modern web technology and is now a UserScript. It allows to protect your location while using location-aware websites, by either adding controlled noise or completely spoof with the fixed coordinates. It supports the following UserScript managers:
 
 - [Tampermonkey](https://www.tampermonkey.net/)
 - [Violentmonkey](https://violentmonkey.github.io/)
@@ -10,13 +10,13 @@
 
 ## Installation
 
-https://unpkg.com/location-guard@latest/dist/location-guard-ng.user.js
+https://unpkg.com/location-guard@latest/dist/location-guard-neo.user.js
 
 ## Configuration
 
-After installing the UserScript, you can configure it by opening your user script manager menu, where the "Options" menu item can be found under the "Location Guard Ng" menu. You can also access the configuration page directly by visiting the following URL:
+After installing the UserScript, you can configure it by opening your user script manager menu, where the "Options" menu item can be found under the "Location Guard Neo" menu. You can also access the configuration page directly by visiting the following URL:
 
-https://location-guard-ng.skk.moe/options
+https://location-guard-neo.pages.dev/options
 
 ## TODO
 
@@ -32,12 +32,34 @@ https://location-guard-ng.skk.moe/options
 - Run `pnpm run build`
 - The built script will be available in `dist` folder
 
+### Build-time Configuration
+
+The following environment variables can be used to customize URLs at build time:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `CONFIG_UI_HOST` | `location-guard-neo.pages.dev` | Hostname for the configuration UI (used for host matching) |
+| `CONFIG_UI_ORIGIN` | `https://${CONFIG_UI_HOST}` | Full origin URL for the configuration UI |
+| `DIST_BASE_URL` | `https://unpkg.com/location-guard@latest/dist` | Base URL for UserScript update and download |
+
+Example — build with a custom domain:
+
+```bash
+CONFIG_UI_HOST=my-domain.com pnpm run build
+```
+
+Example — build with custom distribution URL:
+
+```bash
+DIST_BASE_URL=https://cdn.example.com/dist pnpm run build
+```
+
 <details>
 <summary>
 <h2>FAQ</h2>
 </summary>
 
-### What is Location Guard and Location Guard Ng?
+### What is Location Guard and Location Guard Neo?
 
 Websites can ask the browser for your location (via JavaScript). When they do
 so, the browser first asks your permission, and if you accept, it detects your
@@ -49,21 +71,21 @@ The Location Guard browser extension project starts since 2013 and aims to
 intercepts this procedure. It has been discontinued in 2020 and now obsolete
 (due to [the removal of MV2 support in Google Chrome](https://developer.chrome.com/docs/extensions/develop/migrate/mv2-deprecation-timeline)).
 
-The Location Guard Ng is a rewrite version of the original Location Guard browser
+The Location Guard Neo is a rewrite version of the original Location Guard browser
 extension that uses modern web technology (Like TypeScript, React, rollup, etc).
 
 The permission dialog appears as usual, and you can still choose to deny. If
-you give permission, then Location Guard Ng obtains your location and adds "random noise"
+you give permission, then Location Guard Neo obtains your location and adds "random noise"
 to it or even completely spoofs it with a specified fixed location. Only
 the fake location is then given to the website.
 
-To see Location Guar Ng in action use [this demo](https://browserleaks.com/geo), a
+To see Location Guard Neo in action use [this demo](https://browserleaks.com/geo), a
 [geolocalized weather forecast](https://darksky.net/), or go to [Google
 Maps](https://www.google.com/maps) and press the "pin" button.
 
-### What kind of privacy does Location Guard Ng provide?
+### What kind of privacy does Location Guard Neo provide?
 
-Location Guard Ng provides privacy within a certain _protection area_ by ensuring
+Location Guard Neo provides privacy within a certain _protection area_ by ensuring
 that all locations within this area look _plausible_ for being the real one.
 This is achieved by adding random noise in a way such that all locations within
 the protection area can produce the same fake location with similar probability.
@@ -86,7 +108,7 @@ service provided by the website less useful.
 
 By default all websites use the "medium" level (this can be changed from the
 extension's options). You can select a different level for a specific website
-using the ![](src/images/pin_19.png) icon. For instance, you could select
+using the ![pin](src/images/pin_19.png) icon. For instance, you could select
 a lower privacy level for websites that need an accurate location (eg. maps),
 and a higher one for websites that only need approximate information (eg.
 weather forecast).
@@ -115,35 +137,35 @@ transmitted to Google's servers. However, it has the side effect that the
 _permission dialog is not displayed at all_. This behaviour is usually
 acceptable when the fixed location is dummy, but it can be modified if you wish.
 
-### Why some websites detect my location although I use Location Guard Ng?
+### Why some websites detect my location although I use Location Guard Neo?
 
 Some websites detect your location based on your [IP address](https://en.wikipedia.org/wiki/IP_address)
 which is visible to all websites you visit. However, most of the time this type
 of geolocation is _not accurate_ and is limited to the city or postal/zip code level.
 
-Location Guard Ng does not protect your IP address; it hides the location revealed
+Location Guard Neo does not protect your IP address; it hides the location revealed
 by the browser through the JavaScript API, which is usually _very accurate_.
 
-### How Location Guard Ng uses my information?
+### How Location Guard Neo uses my information?
 
-Location Guard Ng takes your privacy seriously! First, the extension itself has no
+Location Guard Neo takes your privacy seriously! First, the extension itself has no
 "special permission" to access your location, it can obtain it only when a
 website asks for it and only if you allow access in the permission dialog.
 
-Location Guard Ng runs locally in your browser and _sends no information_
+Location Guard Neo runs locally in your browser and _sends no information_
 whatsoever to the network. It only communicates your fake location to the
 website that asks for it.
 
-Location Guard Ng also never stores your real location. The _fake_ location is
+Location Guard Neo also never stores your real location. The _fake_ location is
 cached for a small period of time; if a website asks for your location during
 this time the cached fake location will be returned. This improves privacy by
 avoiding to generate too many fake locations which would be centered around the
 real one. The cache period can be configured from the extension's options
 (Privacy Levels tab) and there is also a button to delete the cache.
 
-### What is the technology behind Location Guard Ng?
+### What is the technology behind Location Guard Neo?
 
-Location Guard Ng implements a [location obfuscation](https://en.wikipedia.org/wiki/Location_obfuscation)
+Location Guard Neo implements a [location obfuscation](https://en.wikipedia.org/wiki/Location_obfuscation)
 technique based on adding noise from a 2-dimensional
 [Laplace distribution](https://en.wikipedia.org/wiki/Laplace_distribution).
 This method can be formally shown to provide a privacy guarantee which is a variant
@@ -156,13 +178,4 @@ of Nicolas Bordenabe.
 
 ----
 
-**Location Guard Ng** © [Sukka](https://github.com/SukkaW), Released under the [MIT](./LICENSE) License.
-Authored and maintained by Sukka with help from contributors ([list](https://github.com/SukkaW/location-guard-ng/graphs/contributors)).
-
-> [Personal Website](https://skk.moe) · [Blog](https://blog.skk.moe) · GitHub [@SukkaW](https://github.com/SukkaW) · Telegram Channel [@SukkaChannel](https://t.me/SukkaChannel) · Mastodon [@sukka@acg.mn](https://acg.mn/@sukka) · Twitter [@isukkaw](https://twitter.com/isukkaw) · Keybase [@sukka](https://keybase.io/sukka)
-
-<p align="center">
-  <a href="https://github.com/sponsors/SukkaW/">
-    <img src="https://sponsor.cdn.skk.moe/sponsors.svg"/>
-  </a>
-</p>
+**Location Guard Neo** is released under the [MIT](./LICENSE) License.

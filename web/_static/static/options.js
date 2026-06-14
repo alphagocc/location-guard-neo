@@ -9,15 +9,15 @@ const L = window.L;
 const locationGuardReady = new Promise((resolve) => {
   if ('$locationGuard' in window && window.$locationGuard.ready) {
     resolve();
-  } else {
+  }
+  else {
     window.addEventListener('location-guard-config-ui-ready', resolve, { once: true });
   }
 
-  // eslint-disable-next-line sukka/prefer-timer-id -- safe
   setTimeout(() => {
     if (!('$locationGuard' in window)) {
       window.alert('Location Guard UserScript is missing, please install it first!');
-      window.location.assign('https://location-guard-ng.skk.moe');
+      window.location.assign('/');
       resolve();
     }
   }, 1000);
@@ -35,7 +35,7 @@ let sliderRadius, sliderCacheTime;
 // default pos
 let currentPos = {
   latitude: 48.860_141_066_724_41,
-  longitude: 2.356_910_705_566_406
+  longitude: 2.356_910_705_566_406,
 };
 
 // slider wrapper class, cause sGlide interface sucks
@@ -44,7 +44,7 @@ function Slider(opt) {
   this.value = opt.min;
 
   const obj = this;
-  $('#' + opt.id).sGlide({
+  $(`#${opt.id}`).sGlide({
     totalRange: [opt.min, opt.max],
     drag(e) {
       let value = Math.round(e.custom);
@@ -55,13 +55,13 @@ function Slider(opt) {
       obj.value = Math.round(e.custom);
       obj.value -= obj.value % opt.step;
       opt.change(obj.value);
-    }
+    },
   });
 
   this.set = function (value) {
     this.value = value;
     const pct = 100 * (value - opt.min) / (opt.max - opt.min);
-    $('#' + opt.id).sGlide('startAt', pct);
+    $(`#${opt.id}`).sGlide('startAt', pct);
   };
 }
 
@@ -79,11 +79,11 @@ async function saveOptions() {
     const $cachedPos = await window.$locationGuard.getValue('cachedPos');
 
     // update accuracy of cached positions to reflect the change
-    // eslint-disable-next-line guard-for-in -- plain object
+
     for (const level in $cachedPos) {
       const epsilon = $epsilon / $levels[level].radius;
       $cachedPos[level].position.coords.accuracy // add/remove the .9 accuracy
-        += (updateAccuracy ? 1 : -1) * Math.round(PlanarLaplace.alphaDeltaAccuracy(epsilon, .9));
+        += (updateAccuracy ? 1 : -1) * Math.round(PlanarLaplace.alphaDeltaAccuracy(epsilon, 0.9));
     }
 
     await window.$locationGuard.setValue('cachedPos', $cachedPos);
@@ -109,7 +109,7 @@ async function saveLevel() {
 
   $levels[activeLevel] = {
     radius,
-    cacheTime
+    cacheTime,
   };
 
   await window.$locationGuard.setValue('levels', $levels);
@@ -123,7 +123,7 @@ function initLevelMap() {
   levelMap = L.map('levelMap')
     .addLayer(new L.TileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      { attribution: 'Map data © OpenStreetMap contributors' }
+      { attribution: 'Map data © OpenStreetMap contributors' },
     ))
     .setView(latlng, 13)
     .on('dragstart', () => {
@@ -147,18 +147,18 @@ function initLevelMap() {
     .on('drag', handleChangePosEvent);
 
   // popup
-  const popupHtml =
-    '<div class="map-popup">'
-    + '<p><b>Protection area (red)</b> and <b>accuracy (blue)</b> around some (hypothetical) location.</p>'
-    + '<p>Click on the map or drag the marker to change the location. Click on'
-    + '<a href="#" id="levelMapCurrentPos" class="popup-location-btn ui-btn ui-btn-inline ui-icon-location ui-btn-icon-notext"></a>'
-    + 'to show your current location.</p>'
-    + '</div>';
+  const popupHtml
+    = '<div class="map-popup">'
+      + '<p><b>Protection area (red)</b> and <b>accuracy (blue)</b> around some (hypothetical) location.</p>'
+      + '<p>Click on the map or drag the marker to change the location. Click on'
+      + '<a href="#" id="levelMapCurrentPos" class="popup-location-btn ui-btn ui-btn-inline ui-icon-location ui-btn-icon-notext"></a>'
+      + 'to show your current location.</p>'
+      + '</div>';
 
   levelMap.popup = L.popup({
     autoPan: false,
     closeOnClick: false, // we'll close it ourselves
-    maxWidth: Math.min($('#levelMap').width() - 50, 300)
+    maxWidth: Math.min($('#levelMap').width() - 50, 300),
   })
     .setContent(popupHtml);
 
@@ -167,7 +167,7 @@ function initLevelMap() {
     color: null,
     fillColor: 'blue',
     fillOpacity: 0.4,
-    clickable: false
+    clickable: false,
   })
     .addTo(levelMap);
 
@@ -175,7 +175,7 @@ function initLevelMap() {
     color: null,
     fillColor: '#f03',
     fillOpacity: 0.4,
-    clickable: false
+    clickable: false,
   })
     .addTo(levelMap);
 
@@ -183,12 +183,12 @@ function initLevelMap() {
   // see https://github.com/domoritz/leaflet-locatecontrol
   //
   const myLocate = L.Control.Locate.extend({
-    start: showCurrentPosition
+    start: showCurrentPosition,
   });
   // eslint-disable-next-line new-cap -- third party library
   new myLocate({
     icon: 'icon-trans ui-btn-icon-notext ui-icon-location', // use jqm's icons to avoid loading
-    iconLoading: 'icon-trans ui-btn-icon-notext ui-icon-location' // font awesome
+    iconLoading: 'icon-trans ui-btn-icon-notext ui-icon-location', // font awesome
   })
     .addTo(levelMap);
 
@@ -213,7 +213,7 @@ async function initFixedPosMap() {
   fixedPosMap = new L.map('fixedPosMap')
     .addLayer(new L.TileLayer(
       'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      { attribution: 'Map data © OpenStreetMap contributors' }
+      { attribution: 'Map data © OpenStreetMap contributors' },
     ))
     .setView(latlng, 14)
     .on('dragstart', () => {
@@ -239,16 +239,16 @@ async function initFixedPosMap() {
     });
 
   // popup
-  const popupHtml =
-    '<div class="map-popup">'
-    + '<p>This is the location reported when the privacy level is set to <b>"Use fixed location"</b>.</p>'
-    + '<p>Click on the map or drag the marker to set a new fixed location.</p>'
-    + '</div>';
+  const popupHtml
+    = '<div class="map-popup">'
+      + '<p>This is the location reported when the privacy level is set to <b>"Use fixed location"</b>.</p>'
+      + '<p>Click on the map or drag the marker to set a new fixed location.</p>'
+      + '</div>';
 
   fixedPosMap.popup = L.popup({
     autoPan: false,
     closeOnClick: false, // we'll close it ourselves
-    maxWidth: Math.min($('#fixedPosMap').width() - 50, 300)
+    maxWidth: Math.min($('#fixedPosMap').width() - 50, 300),
   })
     .setContent(popupHtml);
 
@@ -259,7 +259,7 @@ async function initFixedPosMap() {
     drawCircle: false,
     follow: false,
     icon: 'icon-trans ui-btn-icon-notext ui-icon-location', // use jqm's icons to avoid loading
-    iconLoading: 'icon-trans ui-btn-icon-notext ui-icon-location' // font awesome
+    iconLoading: 'icon-trans ui-btn-icon-notext ui-icon-location', // font awesome
   }).addTo(fixedPosMap);
 
   // geocoder control
@@ -333,7 +333,8 @@ function showPopup(map) {
     const bounds = map.getBounds();
     latlng = bounds.getCenter();
     latlng.lat = bounds.getSouth();
-  } else {
+  }
+  else {
     // get pos 30 pixes above the marker
     const pos = map.latLngToLayerPoint(map.marker._latlng);
     pos.y -= 30;
@@ -354,7 +355,7 @@ async function updateRadius(radius, fit) {
   const epsilon = window.$locationGuard.epsilon;
 
   // update radius text and map
-  const acc = Math.round(PlanarLaplace.alphaDeltaAccuracy(epsilon / radius, .95));
+  const acc = Math.round(PlanarLaplace.alphaDeltaAccuracy(epsilon / radius, 0.95));
 
   moveCircles();
 
@@ -364,9 +365,11 @@ async function updateRadius(radius, fit) {
   const firstView = !inited.radius;
   inited.radius = true;
 
-  if (fit) levelMap.fitBounds(levelMap.accuracy.getBounds(), { animate: !firstView });
+  if (fit)
+    levelMap.fitBounds(levelMap.accuracy.getBounds(), { animate: !firstView });
 
-  if (firstView) showPopup(levelMap);
+  if (firstView)
+    showPopup(levelMap);
 
   $('#radius').text(radius);
   $('#accuracy').text(acc);
@@ -380,8 +383,8 @@ function updateCache(ct) {
     ct === 0
       ? 'don\'t cache'
       : (ct < 60
-        ? ct + ' minute' + (ct > 1 ? 's' : '')
-        : h + ' hour' + (h > 1 ? 's' : ''))
+          ? `${ct} minute${ct > 1 ? 's' : ''}`
+          : `${h} hour${h > 1 ? 's' : ''}`),
   );
 }
 
@@ -395,8 +398,10 @@ function initPages() {
 
     if (inited[page]) {
       // page already inited. only call invalidateSize on maps
-      if (page === 'levels') levelMap.invalidateSize();
-      if (page === 'fixedPos') fixedPosMap.invalidateSize();
+      if (page === 'levels')
+        levelMap.invalidateSize();
+      if (page === 'fixedPos')
+        fixedPosMap.invalidateSize();
       return;
     }
     inited[page] = true;
@@ -426,7 +431,7 @@ function initPages() {
             levelMap.closePopup();
             updateRadius(value, false);
           },
-          change: saveLevel
+          change: saveLevel,
         });
         sliderCacheTime = new Slider({
           id: 'setCacheTime',
@@ -434,7 +439,7 @@ function initPages() {
           max: 69,
           step: 1,
           slide: updateCache,
-          change: saveLevel
+          change: saveLevel,
         });
 
         initLevelMap();
@@ -463,7 +468,7 @@ function showCurrentPosition() {
     },
     (err) => {
       console.log('cannot get location', err);
-    }
+    },
   );
 }
 
@@ -509,7 +514,7 @@ $(document).ready(() => {
   });
 
   $('.reportIssue').click(() => {
-    window.open('https://github.com/SukkaW/location-guard-ng/issues', '_blank');
+    window.open('https://github.com/Alphagocc/location-guard-neo/issues', '_blank');
   });
 
   $(document).on('click', '#levelMapCurrentPos', showCurrentPosition); // this doesn't exist yet (it's inside the popup), so we set in document

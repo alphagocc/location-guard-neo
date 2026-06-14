@@ -1,15 +1,12 @@
-import { getStoredValueAsync, setStoredValueAsync } from './storage';
-
-import { PlanarLaplace } from './laplace';
-import { klona } from 'klona/lite';
 import type { MutableGeolocationCoords, MutableGeolocationPosition } from 'location-guard-types';
+
+import { klona } from 'klona/lite';
+import { PlanarLaplace } from './laplace';
+import { getStoredValueAsync, setStoredValueAsync } from './storage';
 import { isMobileDevice, randomInt } from './utils';
 
-// eslint-disable-next-line @typescript-eslint/unbound-method -- cache original function and will be called with proper this
 const watchPosition = navigator.geolocation.watchPosition;
-// eslint-disable-next-line @typescript-eslint/unbound-method -- cache original function and will be called with proper this
 const getCurrentPosition = navigator.geolocation.getCurrentPosition;
-// eslint-disable-next-line @typescript-eslint/unbound-method -- cache original function and will be called with proper this
 const clearWatch = navigator.geolocation.clearWatch;
 
 async function callGeoCb(cb: PositionCallback, pos: MutableGeolocationPosition, checkAllowed: boolean): Promise<void>;
@@ -34,7 +31,8 @@ export function spoofLocation(): void {
     const res = await getNoisyPosition(options);
     if (res.success) {
       callGeoCb(positionCb, res.position, false);
-    } else {
+    }
+    else {
       callGeoCb(positionOnError, res.position, false);
     }
     // callCb(res.success ? positionCb : positionOnError, res.position, false);
@@ -56,10 +54,11 @@ export function spoofLocation(): void {
           watchPosition.apply(navigator.geolocation, [
             position => callGeoCb(cb1, position, true), // ignore the call if privacy protection
             error => callGeoCb(cb2, error, true), // becomes active later!
-            options
-          ])
+            options,
+          ]),
         );
-      } else {
+      }
+      else {
         // Not allowed, we don't install a real watch, just return the position once
         this.getCurrentPosition(cb1, cb2, options);
       }
@@ -87,13 +86,13 @@ async function isWatchAllowed() {
 }
 
 interface NoisyPositionResultSuccess {
-  success: true,
-  position: MutableGeolocationPosition
+  success: true;
+  position: MutableGeolocationPosition;
 }
 
 interface NoisyPositionResultFailure {
-  success: false,
-  position: GeolocationPositionError
+  success: false;
+  position: GeolocationPositionError;
 }
 
 async function getNoisyPosition(opt: PositionOptions | undefined): Promise<NoisyPositionResultSuccess | NoisyPositionResultFailure> {
@@ -113,14 +112,14 @@ async function getNoisyPosition(opt: PositionOptions | undefined): Promise<Noisy
         altitude: isMobileDevice() ? randomInt(10, 100) : null,
         altitudeAccuracy: isMobileDevice() ? 10 : null,
         heading: isMobileDevice() ? randomInt(0, 360) : null,
-        speed: null
+        speed: null,
       },
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
     return { success: true, position: noisy };
   }
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     // we call getCurrentPosition here in the content script, instead of
     // inside the page, because the content-script/page communication is not secure
     //
@@ -133,7 +132,7 @@ async function getNoisyPosition(opt: PositionOptions | undefined): Promise<Noisy
       function (error) {
         resolve({ success: false, position: klona(error) }); // clone, sending the native object returns error
       },
-      opt
+      opt,
     ]);
   });
 }
@@ -147,7 +146,8 @@ async function addNoise(position: MutableGeolocationPosition) {
 
   if (paused || level === 'real') {
     // do nothing, use real location
-  } else if (level === 'fixed') {
+  }
+  else if (level === 'fixed') {
     const fixedPos = await getStoredValueAsync('fixedPos');
 
     position.coords = {
@@ -157,17 +157,20 @@ async function addNoise(position: MutableGeolocationPosition) {
       altitude: isMobileDevice() ? randomInt(10, 100) : null,
       altitudeAccuracy: isMobileDevice() ? 10 : null,
       heading: isMobileDevice() ? randomInt(0, 360) : null,
-      speed: null
+      speed: null,
     } as MutableGeolocationCoords;
-  } else {
+  }
+  else {
     const cachedPos = await getStoredValueAsync('cachedPos');
     const storedEpsilon = await getStoredValueAsync('epsilon');
     const levels = await getStoredValueAsync('levels');
 
     if ('level' in cachedPos && cachedPos[level] && (Date.now() - cachedPos[level].epoch) / 60000 < cachedPos[level].cacheTime) {
       position = cachedPos[level].position;
+      // eslint-disable-next-line no-console -- debug logging
       console.log('using cached', position);
-    } else {
+    }
+    else {
       // add noise
       const epsilon = storedEpsilon / levels[level].radius;
 
@@ -181,7 +184,7 @@ async function addNoise(position: MutableGeolocationPosition) {
         position.coords.accuracy
         && await getStoredValueAsync('updateAccuracy')
       ) {
-        position.coords.accuracy += Math.round(PlanarLaplace.alphaDeltaAccuracy(epsilon, .9));
+        position.coords.accuracy += Math.round(PlanarLaplace.alphaDeltaAccuracy(epsilon, 0.9));
       }
 
       // don't know how to add noise to those, so we set to null (they're most likely null anyway)
@@ -194,6 +197,7 @@ async function addNoise(position: MutableGeolocationPosition) {
       cachedPos[level] = { epoch: Date.now(), position, cacheTime: levels[level].cacheTime };
       await setStoredValueAsync('cachedPos', cachedPos);
 
+      // eslint-disable-next-line no-console -- debug logging
       console.log('noisy coords', position.coords);
     }
   }
