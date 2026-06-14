@@ -17,16 +17,10 @@ A UserScript that protects your browser geolocation privacy by adding controlled
 
 ## Installation
 
-Install from unpkg:
+Install from the project site:
 
 ```
-https://unpkg.com/location-guard-neo@latest/dist/location-guard-neo.user.js
-```
-
-Or from the project site:
-
-```
-https://location-guard-neo.pages.dev/dist/location-guard-neo.user.js
+https://location-guard-neo.eof.moe/dist/location-guard-neo.user.js
 ```
 
 ## Configuration
@@ -34,7 +28,7 @@ https://location-guard-neo.pages.dev/dist/location-guard-neo.user.js
 Open your UserScript manager menu → **Location Guard** → **Configuration**, or visit:
 
 ```
-https://location-guard-neo.pages.dev/options
+https://location-guard-neo.eof.moe/options
 ```
 
 ### Privacy Levels
