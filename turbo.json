@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["CONFIG_UI_HOST", "CONFIG_UI_ORIGIN", "DIST_BASE_URL"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
