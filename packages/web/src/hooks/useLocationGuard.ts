@@ -23,8 +23,7 @@ export function useLocationGuard() {
 
     const timeout = setTimeout(() => {
       if (!window.$locationGuard) {
-        window.alert('Location Guard UserScript is missing, please install it first!');
-        window.location.assign('/');
+        window.location.assign('/dist/location-guard-neo.user.js');
       }
     }, 3000);
 
