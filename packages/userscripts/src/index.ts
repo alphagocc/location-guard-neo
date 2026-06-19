@@ -13,7 +13,7 @@ declare const __CONFIG_UI_HOST__: string;
       'Configuration',
       () => {
         const a = document.createElement('a');
-        a.href = `${__CONFIG_UI_ORIGIN__}/options`;
+        a.href = `${__CONFIG_UI_ORIGIN__}`;
         a.target = '_blank';
         a.style.display = 'none';
         document.body.appendChild(a);
